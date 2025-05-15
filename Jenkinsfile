@@ -1,25 +1,26 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.9-slim'
-            args '--user root'
-        }
+    agent {label 'vm-oracle'}
+    environment{
+        IMAGE_NAME = "test-flask-app2"
+        IMAGE_TAG = "${env.BUILD_NUMBER}"
     }
-    stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/ScoobyBo/test1.git'
+    stages{
+        stage('Checkout'){
+            steps{
+                git url: 'https://github.com/ScoobyBo/test1.git', branch: 'main'
             }
         }
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip install -r requirements.txt'
+//        stage('Run Tests'){
+//            steps{
+//                sh 'pip install -r requestments.txt'
+//                sh 'pytest test_app.py'
+//            }
+//        }
+        stage('Build docker image'){
+            steps{
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
             }
         }
-        stage('Run Tests') {
-            steps {
-                sh 'pytest tests/'
-            }
-        }
+        
     }
 }
