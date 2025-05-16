@@ -21,6 +21,11 @@ pipeline {
                 sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
             }
         }
+        stage('deploy container'){
+            steps{
+                sh 'docker start -p 5000:5000 $IMAGE_NAME'
+            }
+        }
         
     }
 }
