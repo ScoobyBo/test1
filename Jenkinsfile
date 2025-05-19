@@ -3,6 +3,7 @@ pipeline {
     environment{
         IMAGE_NAME = "test-flask-app2"
         IMAGE_TAG = "${env.BUILD_NUMBER}"
+        CONTAINER_NAME = "test-app"
     }
     stages{
         stage('Checkout'){
@@ -10,12 +11,6 @@ pipeline {
                 git url: 'https://github.com/ScoobyBo/test1.git', branch: 'main'
             }
         }
-//        stage('Run Tests'){
-//            steps{
-//                sh 'pip install -r requestments.txt'
-//                sh 'pytest test_app.py'
-//            }
-//        }
         stage('Build docker image'){
             steps{
                 sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
@@ -23,9 +18,18 @@ pipeline {
         }
         stage('deploy container'){
             steps{
-                sh 'docker start -p 5000:5000 $IMAGE_NAME'
+                sh 'docker run -d --name $CONTAINER_NAME -p 5000:5000 ${IMAGE_NAME}:${IMAGE_TAG}'
             }
         }
         
+    }
+    post{
+        always {
+            sh "echo 'Cleaning up container ${CONTAINER_NAME} and удали свою жопу дубина ${IMAGE_NAME}:${IMAGE_TAG}'"
+            sh "docker stop ${CONTAINER_NAME} || true"
+            sh "docker rm ${CONTAINER_NAME} || true"
+            sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true"
+        }
+       
     }
 }
