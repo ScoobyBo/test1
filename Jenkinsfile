@@ -25,7 +25,7 @@ pipeline {
     }
     post{
         always {
-            sh "echo 'Cleaning up container ${CONTAINER_NAME} and удали свою жопу дубина ${IMAGE_NAME}:${IMAGE_TAG}'"
+            sh "echo 'Cleaning up container ${CONTAINER_NAME} removing image hehehe ${IMAGE_NAME}:${IMAGE_TAG}'"
             sh "docker stop ${CONTAINER_NAME} || true"
             sh "docker rm ${CONTAINER_NAME} || true"
             sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG} || true"
