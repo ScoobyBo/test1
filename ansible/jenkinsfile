@@ -1,6 +1,51 @@
 pipeline {
     agent any
     environment {
+        ANSIBLE_HOME = '/usr/bin'
+
+        VAULT_PASS = credentials('parol')
+        
+        SSH_KEY_FILE = "${WORKSPACE}/decrypted_ssh_key"
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                
+                git branch: 'main', url: 'http://127.0.0.1:3000/Vladick/repo.git'
+            }
+        }
+        stage('Decrypt SSH Key') {
+            steps {
+                
+                sh """
+                    ${ANSIBLE_HOME}/ansible-vault decrypt ssh_key.vault --output=${SSH_KEY_FILE} --vault-password-file <(echo \$VAULT_PASS)
+                    chmod 600 ${SSH_KEY_FILE}
+                """
+            }
+        }
+        stage('Run Ansible Playbook') {
+            steps {
+                
+                sh """
+                    ${ANSIBLE_HOME}/ansible-playbook -i inventory.yml playbook.yml -v --private-key=${SSH_KEY_FILE}
+                """
+            }
+        }
+    }
+    post {
+        always {
+            
+            sh "rm -f ${SSH_KEY_FILE}"
+            cleanWs()
+        }
+    }
+}
+
+#----------------------------------------------------------------------------------------------------------
+
+pipeline {
+    agent any
+    environment {
         
         ANSIBLE_HOME = '/usr/bin'
     }

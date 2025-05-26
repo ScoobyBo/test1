@@ -12,7 +12,23 @@ all:
     ansible_connection: ssh
     ansible_port: 22
 
-    
+
+penis:
+  hosts:
+    first_vm:
+      ansible_host: 192.168.0.23
+    second_vm:
+      ansible_host: 192.168.0.27
+    tretiy_vm:
+      ansible_host: 192.168.0.28
+  vars:
+    ansible_user: ansible
+    ansible_ssh_private_key_file: decrypted_ssh_key
+    ansible_connection: ssh
+    ansible_port: 22    
+
+#ansible -i inventory.yml all -m ping --private-key=decrypted_ssh_key
+
 #-----------------------------------------------------------------------------------------------------------------
 
 #all:
