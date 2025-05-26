@@ -1,14 +1,22 @@
 ---
- - name: install and start nginx
-   hosts: all
-   become: yes
-   tasks:
-     - name: install ngnx
-       apt:
-         name: nginx
-         state: latest
-     - name: start engineX
-       service:
-         name: nginx
-         state: started
-         enabled: yes
+- name: S V A G A svaga u menya ee navalom
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install pipi
+      apt:
+        name: nginx
+        state: latest
+        update_cache: yes
+    - name: start pipi
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+    - name: copy pipi to pipi pipi
+      copy:
+        src: ./index.html
+        dest: /var/www/html/index.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
