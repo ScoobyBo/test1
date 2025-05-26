@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+    environment {
+        
+        ANSIBLE_HOME = '/usr/bin'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                
+                git branch: 'main', url: 'http://127.0.0.1:3000/Vladick/repo.git'
+            }
+        }
+        stage('Run Ansible Playbook') {
+            steps {
+                
+                sh """
+                    ${ANSIBLE_HOME}/ansible-playbook -i inventory.ini nginx_playbook.yml -v
+                """
+            }
+        }
+    }
+    post {
+        always {
+            
+            cleanWs()
+        }
+    }
+}
+
+#-------------------------------------------------------------------------------------------------------------
+
+#pipeline {
+#    agent any
+#    stages {
+#        stage('Checkout') {
+#            steps {
+#                
+#                git branch: 'main', url: 'http://127.0.0.1:3000/Vladick/repo.git'
+#            }
+#        }
+#        stage('Run Ansible Playbook') {
+#            steps {
+#                
+#                ansiblePlaybook(
+#                    playbook: 'playbook.yml',
+#                    inventory: 'inventory.yml',
+#                    colorized: true,
+#                    extras: '-v'
+#                )
+#            }
+#        }
+#    }
+#    post {
+#        always {
+#            
+#            cleanWs()
+#        }
+#    }
+#}
